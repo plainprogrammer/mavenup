@@ -36,4 +36,12 @@ EOS
 python_user_path = `printf "import site\\nprint(site.USER_BASE)" | python`.chomp
 `#{python_user_path}/bin/pip install --user ansible`
 
+puts <<EOS
+#####################################
+# Cloning MavenUp Git Repository... #
+#####################################
+EOS
+`mkdir -p $HOME/Projects`
+`git clone https://github.com/plainprorgammer/mavenup.git $HOME/Projects/mavenup`
+
 puts "Done!"
