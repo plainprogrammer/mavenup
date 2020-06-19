@@ -18,7 +18,8 @@
       command: "asdf install helm 2.11.0"
       when: "'2.11.0' not in asdf_helm_versions.stdout_lines|map('trim')"
 
-    - homebrew:
+    - name: "Install Homebrew dependencies for DevOps work"
+      homebrew:
         update_homebrew: yes
         state: latest
         name:
@@ -28,11 +29,13 @@
           - kubernetes-cli
           - kubectx
 
-    - git:
+    - name: "Clone devops source code to ~/Projects/devops"
+      git:
         repo: "git@github.com:mavenlink/devops.git"
         dest: "{{ ansible_env.HOME }}/Projects/devops"
         update: no
-    - git:
+    - name: "Clone Helm charts to ~/Projects/charts"
+      git:
         repo: "git@github.com:mavenlink/charts.git"
         dest: "{{ ansible_env.HOME }}/Projects/charts"
         update: no

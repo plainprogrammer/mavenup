@@ -1,7 +1,8 @@
 ---
 - hosts: localhost
   tasks:
-    - homebrew:
+    - name: "Install basic Homebrew dependencies"
+      homebrew:
         update_homebrew: yes
         state: latest
         name:

@@ -42,7 +42,8 @@
       command: "asdf install yarn 1.17.3"
       when: "'1.17.3' not in asdf_yarn_versions.stdout_lines|map('trim')"
 
-    - homebrew:
+    - name: "Install Homebrew dependencies for working on BigMaven"
+      homebrew:
         update_homebrew: yes
         state: latest
         name:
@@ -50,7 +51,8 @@
           - mysql@5.7
           - redis@3.2
 
-    - git:
+    - name: "Clone mavenlink source code into ~/Projects/mavenlink"
+      git:
         repo: "git@github.com:mavenlink/mavenlink.git"
         dest: "{{ ansible_env.HOME }}/Projects/mavenlink"
         update: no
