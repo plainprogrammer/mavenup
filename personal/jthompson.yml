@@ -1,0 +1,26 @@
+---
+- import_playbook: ../playbooks/bigmaven.yml
+- import_playbook: ../playbooks/devops.yml
+- hosts: localhost
+  tasks:
+    - homebrew_cask:
+        name: 1password
+        state: present
+        update_homebrew: yes
+    - homebrew_cask:
+        name: brave-browser
+        state: present
+        update_homebrew: yes
+    - homebrew_cask:
+        name: jetbrains-toolbox
+        state: present
+        update_homebrew: yes
+    - homebrew_cask:
+        name: homebrew/cask-fonts/font-jetbrains-mono
+        state: present
+        update_homebrew: yes
+    - homebrew:
+        state: latest
+        update_homebrew: yes
+        name:
+          - pinentry-mac

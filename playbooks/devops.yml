@@ -1,0 +1,38 @@
+---
+- import_playbook: baseline.yml
+- hosts: localhost
+  tasks:
+    - name: "Check asdf plugins"
+      command: "asdf plugin list"
+      register: asdf_plugins
+      ignore_errors: True
+    - name: "Install asdf Helm plugin"
+      command: "asdf plugin add helm"
+      when: "'helm' not in asdf_plugins.stdout_lines"
+
+    - name: "Check Helm versions"
+      command: "asdf list helm"
+      register: asdf_helm_versions
+      ignore_errors: True
+    - name: "Install Helm 2.11.0"
+      command: "asdf install helm 2.11.0"
+      when: "'2.11.0' not in asdf_helm_versions.stdout_lines|map('trim')"
+
+    - homebrew:
+        update_homebrew: yes
+        state: latest
+        name:
+          - awscli
+          - aws-iam-authenticator
+          - aws-okta
+          - kubernetes-cli
+          - kubectx
+
+    - git:
+        repo: "git@github.com:mavenlink/devops.git"
+        dest: "{{ ansible_env.HOME }}/Projects/devops"
+        update: no
+    - git:
+        repo: "git@github.com:mavenlink/charts.git"
+        dest: "{{ ansible_env.HOME }}/Projects/charts"
+        update: no

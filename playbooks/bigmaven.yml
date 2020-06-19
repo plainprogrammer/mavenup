@@ -1,0 +1,56 @@
+---
+- import_playbook: baseline.yml
+- hosts: localhost
+  tasks:
+    - name: "Check asdf plugins"
+      command: "asdf plugin list"
+      register: asdf_plugins
+      ignore_errors: True
+    - name: "Install asdf Ruby plugin"
+      command: "asdf plugin add ruby"
+      when: "'ruby' not in asdf_plugins.stdout_lines"
+    - name: "Install asdf NodeJS plugin"
+      command: "asdf plugin add nodejs"
+      when: "'nodejs' not in asdf_plugins.stdout_lines"
+    - name: "Import NodeJS GPG release keys"
+      command: "{{ ansible_env.HOME }}/.asdf/plugins/nodejs/bin/import-release-team-keyring"
+    - name: "Install asdf Yarn plugin"
+      command: "asdf plugin add yarn"
+      when: "'yarn' not in asdf_plugins.stdout_lines"
+
+    - name: "Check Ruby versions"
+      command: "asdf list ruby"
+      register: asdf_ruby_versions
+      ignore_errors: True
+    - name: "Install Ruby 2.3.3"
+      command: "asdf install ruby 2.3.3"
+      when: "'2.3.3' not in asdf_ruby_versions.stdout_lines|map('trim')"
+
+    - name: "Check NodeJS versions"
+      command: "asdf list nodejs"
+      register: asdf_nodejs_versions
+      ignore_errors: True
+    - name: "Install NodeJS 8.11.1"
+      command: "asdf install nodejs 8.11.1"
+      when: "'8.11.1' not in asdf_nodejs_versions.stdout_lines|map('trim')"
+
+    - name: "Check Yarn versions"
+      command: "asdf list yarn"
+      register: asdf_yarn_versions
+      ignore_errors: True
+    - name: "Install Yarn 1.17.3"
+      command: "asdf install yarn 1.17.3"
+      when: "'1.17.3' not in asdf_yarn_versions.stdout_lines|map('trim')"
+
+    - homebrew:
+        update_homebrew: yes
+        state: latest
+        name:
+          - memcached
+          - mysql@5.7
+          - redis@3.2
+
+    - git:
+        repo: "git@github.com:mavenlink/mavenlink.git"
+        dest: "{{ ansible_env.HOME }}/Projects/mavenlink"
+        update: no

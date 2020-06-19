@@ -1,0 +1,16 @@
+---
+- hosts: localhost
+  tasks:
+    - homebrew:
+        update_homebrew: yes
+        state: latest
+        name:
+          - ansible
+          - asdf
+          - git
+          - gpg2
+    - name: "Ensure asdf version manager is loaded by shell"
+      lineinfile:
+        backup: true
+        path: "{{ ansible_env.HOME }}/.zprofile"
+        line: "source $(brew --prefix asdf)/asdf.sh"
