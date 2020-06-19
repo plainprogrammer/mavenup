@@ -1,0 +1,36 @@
+---
+- hosts: localhost
+  tasks:
+    - name: "Load Mac OS standard git ignore configuration."
+      blockinfile:
+        block: "{{ lookup('file', './files/gitignore') }}"
+        dest: "{{ ansible_env.HOME }}/.gitignore"
+        insertbefore: BOF
+        create: yes
+        backup: yes
+
+    - name: "Alias `git commit` to `git ci`"
+      git_config:
+        name: alias.ci
+        scope: global
+        value: commit
+    - name: "Alias `git status` to `git st`"
+      git_config:
+        name: alias.st
+        scope: global
+        value: status
+    - name: "Set vim as default Git editor"
+      git_config:
+        name: core.editor
+        scope: global
+        value: vim
+    - name: "Set global git ignore file"
+      git_config:
+        name: core.excludesfile
+        scope: global
+        value: "{{ ansible_env.HOME }}/.gitignore"
+    - name: "Set git to automatically use color in terminal"
+      git_config:
+        name: color.ui
+        scope: global
+        value: auto

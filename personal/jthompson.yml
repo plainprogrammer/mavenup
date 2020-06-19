@@ -1,26 +1,44 @@
 ---
 - import_playbook: ../playbooks/bigmaven.yml
 - import_playbook: ../playbooks/devops.yml
+- import_playbook: ../playbooks/git.yml
 - hosts: localhost
   tasks:
-    - homebrew_cask:
+    - name: "Install 1Password"
+      homebrew_cask:
         name: 1password
         state: present
         update_homebrew: yes
-    - homebrew_cask:
+    - name: "Install Brave Browser"
+      homebrew_cask:
         name: brave-browser
         state: present
         update_homebrew: yes
-    - homebrew_cask:
+    - name: "JetBrains Toolbox"
+      homebrew_cask:
         name: jetbrains-toolbox
         state: present
         update_homebrew: yes
-    - homebrew_cask:
+    - name: "Install JetBrains Mono Font"
+      homebrew_cask:
         name: homebrew/cask-fonts/font-jetbrains-mono
         state: present
         update_homebrew: yes
-    - homebrew:
+
+    - name: "Install personal preference Homebrew applications"
+      homebrew:
         state: latest
         update_homebrew: yes
         name:
           - pinentry-mac
+
+    - name: "Set global Git user name"
+      git_config:
+        name: user.name
+        scope: global
+        value: "James Thompson"
+    - name: "Set global Git email address"
+      git_config:
+        name: user.email
+        scope: global
+        value: "james@mavenlink.com"
