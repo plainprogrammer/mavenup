@@ -1,3 +1,16 @@
 #!/usr/bin/ruby -w
+require_relative "../lib/help_command"
 
-puts "maven (v0.1.0)"
+available_commands = {
+    help: HelpCommand
+}
+
+command, *options = ARGV
+command_klass = available_commands[command.to_s.downcase.to_sym]
+
+if command_klass
+  command_klass.new(options).run
+else
+  puts "maven (v0.1.0)"
+  puts "Try running `maven help` to learn more."
+end
