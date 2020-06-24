@@ -15,3 +15,10 @@
         backup: true
         path: "{{ ansible_env.HOME }}/.zprofile"
         line: "source $(brew --prefix asdf)/asdf.sh"
+    - name: "Install Homebrew cask applications"
+      homebrew_cask:
+        state: present
+        update_homebrew: yes
+        name:
+          - zoomus
+          - slack
