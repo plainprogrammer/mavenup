@@ -47,12 +47,48 @@
         update_homebrew: yes
         state: latest
         name:
+          - cmake
+          - pkg-config
           - memcached
           - mysql@5.7
           - redis@3.2
+          - imagemagick@6
+
+    - name: "Link ImageMagick 6 for working on BigMaven"
+      homebrew:
+        update_homebrew: yes
+        state: linked
+        name:
+          - imagemagick@6
 
     - name: "Clone mavenlink source code into ~/Projects/mavenlink"
       git:
         repo: "git@github.com:mavenlink/mavenlink.git"
         dest: "{{ ansible_env.HOME }}/Projects/mavenlink"
         update: no
+
+    - name: "Setup local asdf tool-versions for mavenlink project"
+      shell: "asdf local ruby 2.3.3; asdf local nodejs 8.11.1; asdf local yarn 1.17.3"
+      args:
+        chdir: ~/Projects/mavenlink
+        creates: ~/Projects/mavenlink/.tool-versions
+
+    - name: "Install Bundler v1.13.6"
+      shell: "gem install bundler -v ' 1.13.6'"
+      args:
+        chdir: ~/Projects/mavenlink
+
+    - name: "Configure mavenlink Bundler config for mysql2"
+      shell: "bundle config build.mysql2 --with-mysql-config=$(brew --prefix mysql@5.7)/bin/mysql_config --with-mysql-rpath=$(brew --prefix mysql@5.7)/lib --with-opt-dir=$(brew --prefix openssl@1.1)"
+      args:
+        chdir: ~/Projects/mavenlink
+
+    - name: "Install Ruby gems for mavenlink project with Bundler"
+      bundler:
+        state: present
+        chdir: ~/Projects/mavenlink
+
+    - name: "Install Node modules for mavenlink project with Yarn"
+      yarn:
+        path: ~/Projects/mavenlink
+        state: present
